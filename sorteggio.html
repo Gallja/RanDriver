@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Machine Sorteggio</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .slot-machine {
+            display: flex;
+            gap: 20px;
+            padding: 30px;
+            background: #2c2c2c;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .reel {
+            width: 150px;
+            height: 200px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .reel-inner {
+            position: absolute;
+            width: 100%;
+            transition: transform 0.1s;
+            transform-style: preserve-3d;
+        }
+
+        .slot-item {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+            border-bottom: 2px solid #333;
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .spin-btn {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 40px;
+            background: #00b894;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .spin-btn:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 184, 148, 0.5);
+        }
+
+        .result {
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd700;
+            font-size: 2em;
+            text-shadow: 0 0 20px #ffd700;
+            opacity: 0;
+            white-space: nowrap;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .winner {
+            animation: glow 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="slot-machine" id="slotMachine">
+        <div class="result" id="result"></div>
+        <!-- I reel vengono aggiunti dinamicamente -->
+        <button class="spin-btn" id="spinBtn">🎰 SPIN</button>
+    </div>
+    <button class="btn-torna" onclick="window.location.href='index.html'">↩ Torna indietro</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const partecipanti = JSON.parse(localStorage.getItem('partecipanti')) || [];
+            const slotMachine = document.getElementById('slotMachine');
+            const spinBtn = document.getElementById('spinBtn');
+            const result = document.getElementById('result');
+            
+            // Crea i reel
+            const createReel = () => {
+                const reel = document.createElement('div');
+                reel.className = 'reel';
+                const inner = document.createElement('div');
+                inner.className = 'reel-inner';
+                
+                // Duplica i partecipanti per l'effetto infinito
+                const items = [...partecipanti, ...partecipanti, ...partecipanti];
+                items.forEach(name => {
+                    const div = document.createElement('div');
+                    div.className = 'slot-item';
+                    div.textContent = name;
+                    inner.appendChild(div);
+                });
+                
+                reel.appendChild(inner);
+                return reel;
+            };
+
+            // Aggiungi 3 reel
+            for(let i = 0; i < 3; i++) {
+                slotMachine.insertBefore(createReel(), spinBtn);
+            }
+
+            let isSpinning = false;
+            
+            spinBtn.addEventListener('click', () => {
+                if(isSpinning || partecipanti.length < 2) return;
+                
+                isSpinning = true;
+                result.style.opacity = '0';
+                
+                const reels = document.querySelectorAll('.reel-inner');
+                const finalPositions = [];
+                
+                reels.forEach((reel, index) => {
+                    const items = reel.children;
+                    const randomIndex = Math.floor(Math.random() * partecipanti.length);
+                    const targetPosition = -(items.length - 3 - randomIndex) * 200;
+                    
+                    reel.style.transform = `translateY(${targetPosition}px)`;
+                    
+                    finalPositions.push(partecipanti[randomIndex]);
+                });
+
+                setTimeout(() => {
+                    isSpinning = false;
+                    const winner = finalPositions[Math.floor(Math.random() * finalPositions.length)];
+                    result.textContent = `VINCITORE: ${winner}`;
+                    result.style.opacity = '1';
+                    result.classList.add('winner');
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>

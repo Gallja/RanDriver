@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elenco Partecipanti</title>
+    <title>Gestione Partecipanti</title>
     <style>
+        /* Stili precedenti... */
         :root {
             --primary: #2d3436;
             --secondary: #0984e3;
@@ -98,7 +99,7 @@
 
         #riepilogoNomi {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 1rem;
             margin-top: 1.5rem;
         }
@@ -106,68 +107,80 @@
         .badge {
             background: var(--accent);
             color: white;
-            padding: 0.8rem 1.2rem;
+            padding: 0.8rem;
             border-radius: 25px;
-            text-align: center;
             font-weight: 500;
             position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 120px;
+            max-width: 100%;
+            word-break: break-word;
+            white-space: normal;
         }
 
-        .badge:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .badge:hover:after {
-            opacity: 1;
-        }
-
-        .badge:hover {
-            transform: translateY(-2px);
-        }
-
-        @keyframes badge-appear {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        .remove-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            margin-left: auto;
+            cursor: pointer;
         }
 
         @media (max-width: 600px) {
-            body {
-                padding: 1rem;
+            #riepilogoNomi {
+                grid-template-columns: 1fr;
             }
             
-            .container {
-                padding: 1.5rem;
-            }
-            
-            .input-group {
-                flex-direction: column;
-            }
-            
-            button {
+            .badge {
                 width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .badge {
+                font-size: 0.9rem;
+                padding: 0.6rem;
+            }
+        }
+
+        .remove-btn:hover {
+            background: rgba(255,255,255,0.5);
+            transform: scale(1.1);
+        }
+
+        @keyframes badge-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes badge-out {
+            to {
+                opacity: 0;
+                transform: scale(0.8);
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Registro Partecipanti</h1>
+        <h1>Aggiungi guidatore</h1>
         
         <div class="input-group">
             <input type="text" id="nomeInput" placeholder="Inserisci nome partecipante..." autofocus>
@@ -197,27 +210,52 @@
             }
         }
 
+        function rimuoviPartecipante(index) {
+            partecipanti.splice(index, 1);
+            aggiornaRiepilogo();
+        }
+
         function aggiornaRiepilogo() {
             const riepilogoDiv = document.getElementById('riepilogoNomi');
             const messaggioVuoto = document.getElementById('messaggioVuoto');
 
             riepilogoDiv.innerHTML = partecipanti
-                .map(nome => `
-                    <div class="badge" style="animation: badge-appear 0.3s ease">
+                .map((nome, index) => `
+                    <div class="badge" style="animation: badge-in 0.3s ease">
                         ${nome}
+                        <span class="remove-btn" onclick="rimuoviPartecipante(${index})">×</span>
                     </div>
                 `).join('');
 
             messaggioVuoto.style.display = partecipanti.length > 0 ? 'none' : 'block';
+            
+            // Aggiungi animazione uscita agli elementi rimossi
+            document.querySelectorAll('.badge').forEach(badge => {
+                badge.addEventListener('animationend', (e) => {
+                    if (e.animationName === 'badge-out') {
+                        badge.remove();
+                    }
+                });
+            });
         }
 
-        // Aggiungi con Invio
+        // Funzione per rimozione con animazione
+        function rimuoviPartecipante(index) {
+            const badge = document.querySelectorAll('.badge')[index];
+            if (badge) {
+                badge.style.animation = 'badge-out 0.3s ease forwards';
+                setTimeout(() => {
+                    partecipanti.splice(index, 1);
+                    aggiornaRiepilogo();
+                }, 250);
+            }
+        }
+
         document.getElementById('nomeInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') aggiungiNome();
         });
 
-        // Mostra/nascondi messaggio all'avvio
-        aggiornaRiepilogo();
+        document.addEventListener('DOMContentLoaded', aggiornaRiepilogo);
     </script>
 </body>
 </html>

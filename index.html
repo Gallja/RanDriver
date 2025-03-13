@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Partecipanti</title>
+    <style>
+        /* Stili esistenti... */
+        
+        .riepilogo-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            display: none; /* Nascondi inizialmente */
+        }
+
+        .riepilogo-title {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        #riepilogoNomi {
+            line-height: 1.6;
+            columns: 2;
+            column-gap: 30px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 3px;
+            background-color: #81c784;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Aggiungi Partecipanti</h1>
+        <div class="input-group">
+            <input type="text" id="nomeInput" placeholder="Inserisci nome...">
+            <button onclick="aggiungiNome()">Aggiungi</button>
+        </div>
+        <ul id="listaNomi"></ul>
+
+        <!-- Nuova sezione riepilogo -->
+        <div class="riepilogo-section" id="riepilogo">
+            <h3 class="riepilogo-title">📋 Elenco Completo Partecipanti</h3>
+            <div id="riepilogoNomi"></div>
+        </div>
+    </div>
+
+    <script>
+        let partecipanti = []; // Array per memorizzare tutti i nomi
+
+        function aggiungiNome() {
+            const input = document.getElementById('nomeInput');
+            const nome = input.value.trim();
+            
+            if (nome) {
+                // Aggiungi alla lista visiva
+                const lista = document.getElementById('listaNomi');
+                const listItem = document.createElement('li');
+                listItem.textContent = nome;
+                lista.appendChild(listItem);
+
+                // Aggiungi all'array e aggiorna riepilogo
+                partecipanti.push(nome);
+                aggiornaRiepilogo();
+
+                input.value = '';
+            }
+        }
+
+        function aggiornaRiepilogo() {
+            const riepilogoDiv = document.getElementById('riepilogoNomi');
+            const riepilogoSection = document.getElementById('riepilogo');
+            
+            // Mostra/nascondi la sezione
+            riepilogoSection.style.display = partecipanti.length > 0 ? 'block' : 'none';
+
+            // Formatta i nomi con badge
+            riepilogoDiv.innerHTML = partecipanti
+                .map(nome => `<span class="badge">${nome}</span>`)
+                .join('');
+        }
+
+        // Supporto per tasto Invio
+        document.getElementById('nomeInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') aggiungiNome();
+        });
+    </script>
+</body>
+</html>

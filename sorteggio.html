@@ -97,12 +97,16 @@
         .winner {
             animation: glow 1s infinite;
         }
+
+        .reel-inner {
+            transition: transform 7s cubic-bezier(0.1, 0.7, 0.1, 1);
+        }
+
     </style>
 </head>
 <body>
     <div class="slot-machine" id="slotMachine">
         <div class="result" id="result"></div>
-        <!-- I reel vengono aggiunti dinamicamente -->
         <button class="spin-btn" id="spinBtn">🎰 SPIN</button>
     </div>
     <button class="btn-torna" onclick="window.location.href='index.html'">↩ Torna indietro</button>
@@ -113,16 +117,15 @@
             const slotMachine = document.getElementById('slotMachine');
             const spinBtn = document.getElementById('spinBtn');
             const result = document.getElementById('result');
-            
-            // Crea i reel
+
             const createReel = () => {
                 const reel = document.createElement('div');
                 reel.className = 'reel';
                 const inner = document.createElement('div');
                 inner.className = 'reel-inner';
                 
-                // Duplica i partecipanti per l'effetto infinito
-                const items = [...partecipanti, ...partecipanti, ...partecipanti];
+                // Aumenta il numero di duplicati per l'effetto scroll lungo
+                const items = [...partecipanti, ...partecipanti, ...partecipanti, ...partecipanti, ...partecipanti];
                 items.forEach(name => {
                     const div = document.createElement('div');
                     div.className = 'slot-item';
@@ -148,25 +151,27 @@
                 result.style.opacity = '0';
                 
                 const reels = document.querySelectorAll('.reel-inner');
-                const finalPositions = [];
+                const winnerIndex = Math.floor(Math.random() * partecipanti.length);
+                const winner = partecipanti[winnerIndex];
                 
                 reels.forEach((reel, index) => {
                     const items = reel.children;
-                    const randomIndex = Math.floor(Math.random() * partecipanti.length);
-                    const targetPosition = -(items.length - 3 - randomIndex) * 200;
+                    const targetPosition = -(items.length - 5 - winnerIndex) * 200;
                     
+                    // Reset position
+                    reel.style.transform = 'translateY(0)';
+                    void reel.offsetHeight; // Trigger reflow
+                    
+                    // Avvia animazione
                     reel.style.transform = `translateY(${targetPosition}px)`;
-                    
-                    finalPositions.push(partecipanti[randomIndex]);
                 });
 
                 setTimeout(() => {
                     isSpinning = false;
-                    const winner = finalPositions[Math.floor(Math.random() * finalPositions.length)];
                     result.textContent = `VINCITORE: ${winner}`;
                     result.style.opacity = '1';
                     result.classList.add('winner');
-                }, 3000);
+                }, 7000);
             });
         });
     </script>

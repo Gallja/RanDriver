@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RanDriver</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🚗💨 Aggiungi guidatore</h1>
+        
+        <div class="input-group">
+            <input type="text" id="nomeInput" placeholder="Inserisci nome guidatore..." autofocus>
+            <button onclick="aggiungiNome()">Aggiungi</button>
+        </div>
+
+        <div class="riepilogo-section">
+            <div id="riepilogoNomi"></div>
+            <p id="messaggioVuoto" style="text-align: center; color: #666; display: none;">
+                Nessun guidatore aggiunto
+            </p>
+        </div>
+        <button class="btn-sorteggia" id="sorteggiaBtn" onclick="redirectToSorteggio()">🎰 Sorteggia</button>
+    </div>
+
+    <script src="script/script.js"></script>
+</body>
+</html>

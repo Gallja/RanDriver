@@ -37,12 +37,11 @@
     .reel-inner {
       position: absolute;
       width: 100%;
-      /* Manteniamo la durata a 8 secondi */
       transition: transform 8s cubic-bezier(0.1, 0.3, 0.1, 1);
       transform-style: preserve-3d;
     }
     .slot-item {
-      height: 200px; /* Deve corrispondere al calcolo finale */
+      height: 200px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -65,6 +64,12 @@
       font-size: 1.2em;
       cursor: pointer;
       transition: all 0.3s;
+    }
+    
+    .spin-btn.small-btn {
+      font-size: 0.9em; 
+      padding: 10px 30px;
+      bottom: -140px;
     }
     .result {
       position: absolute;
@@ -94,9 +99,12 @@
   <div class="slot-machine" id="slotMachine">
     <div class="result" id="result"></div>
     <button class="spin-btn" id="spinBtn">🎰 SPIN</button>
+    
+    <!-- Nuovo bottone più piccolo per tornare indietro -->
+    <button class="spin-btn small-btn" onclick="window.history.back()">
+      ↩ Torna indietro
+    </button>
   </div>
-  <button class="spin-btn" onclick="window.location.href='index.html'" 
-          style="background: #0984e3; margin-top: 50px;">↩ Torna indietro</button>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -111,7 +119,7 @@
         const inner = document.createElement('div');
         inner.className = 'reel-inner';
         
-        // Ripetiamo l'elenco dei partecipanti 3 volte
+        // Ripetiamo i partecipanti 3 volte
         const items = [...partecipanti, ...partecipanti, ...partecipanti];
         items.forEach(name => {
           const div = document.createElement('div');
@@ -124,7 +132,7 @@
         return reel;
       };
 
-      // Aggiungo 3 rulli alla slot machine
+      // Creiamo 3 rulli
       for(let i = 0; i < 3; i++) {
         slotMachine.insertBefore(createReel(), spinBtn);
       }
@@ -141,26 +149,19 @@
         const winnerIndex = Math.floor(Math.random() * partecipanti.length);
         const winner = partecipanti[winnerIndex];
         
-        // Cicli extra moderati (2) per non far "saltare" troppo i nomi
+        // Esempio di 2 cicli extra per non farlo scorrere troppo veloce
         const extraCycles = 2;
-        
-        // Calcolo della posizione finale
-        // 1) Partecipanti * extraCycles -> numero di elementi totali che scorrono prima di fermarsi
-        // 2) + winnerIndex -> l'elemento finale è proprio quello vincente
         const targetIndex = (partecipanti.length * extraCycles) + winnerIndex;
-        
-        // Ogni slot ha altezza 200px
-        const targetPosition = -(targetIndex * 200);
+        const targetPosition = -(targetIndex * 200); // ogni slot è 200px in altezza
 
         const reels = document.querySelectorAll('.reel-inner');
         reels.forEach((reel) => {
-          // Reset per riavviare la transizione
           reel.style.transform = 'translateY(0)';
-          void reel.offsetHeight; // forziamo il reflow
+          void reel.offsetHeight; // forza il reflow
           reel.style.transform = `translateY(${targetPosition}px)`;
         });
 
-        // Durata 8 secondi, come la transition
+        // Durata 8s per la transizione
         setTimeout(() => {
           isSpinning = false;
           result.textContent = `VINCITORE: ${winner}`;

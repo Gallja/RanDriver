@@ -45,7 +45,6 @@ function redirectToSorteggio() {
 }
 
 function aggiornaRiepilogo() {
-    // ... codice esistente ...
     const riepilogoDiv = document.getElementById('riepilogoNomi');
     const messaggioVuoto = document.getElementById('messaggioVuoto');
 
@@ -71,7 +70,6 @@ function aggiornaRiepilogo() {
     sorteggiaBtn.disabled = partecipanti.length === 0;
 }
 
-// Inizializza il pulsante all'avvio
 document.addEventListener('DOMContentLoaded', () => {
     aggiornaRiepilogo();
 });

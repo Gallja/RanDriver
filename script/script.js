@@ -17,7 +17,35 @@ function rimuoviPartecipante(index) {
     aggiornaRiepilogo();
 }
 
+function rimuoviPartecipante(index) {
+    const badge = document.querySelectorAll('.badge')[index];
+    if (badge) {
+        badge.style.animation = 'badge-out 0.3s ease forwards';
+        setTimeout(() => {
+            partecipanti.splice(index, 1);
+            aggiornaRiepilogo();
+        }, 250);
+    }
+}
+
+document.getElementById('nomeInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') aggiungiNome();
+});
+
+document.addEventListener('DOMContentLoaded', aggiornaRiepilogo);
+
+function redirectToSorteggio() {
+    if(partecipanti.length === 0) {
+        alert('Aggiungi almeno un guidatore prima di sorteggiare!');
+        return;
+    }
+    
+    localStorage.setItem('partecipanti', JSON.stringify(partecipanti));
+    window.location.href = 'sorteggio.html';
+}
+
 function aggiornaRiepilogo() {
+    // ... codice esistente ...
     const riepilogoDiv = document.getElementById('riepilogoNomi');
     const messaggioVuoto = document.getElementById('messaggioVuoto');
 
@@ -38,22 +66,12 @@ function aggiornaRiepilogo() {
             }
         });
     });
+    
+    const sorteggiaBtn = document.getElementById('sorteggiaBtn');
+    sorteggiaBtn.disabled = partecipanti.length === 0;
 }
 
-// Funzione per rimozione con animazione
-function rimuoviPartecipante(index) {
-    const badge = document.querySelectorAll('.badge')[index];
-    if (badge) {
-        badge.style.animation = 'badge-out 0.3s ease forwards';
-        setTimeout(() => {
-            partecipanti.splice(index, 1);
-            aggiornaRiepilogo();
-        }, 250);
-    }
-}
-
-document.getElementById('nomeInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') aggiungiNome();
+// Inizializza il pulsante all'avvio
+document.addEventListener('DOMContentLoaded', () => {
+    aggiornaRiepilogo();
 });
-
-document.addEventListener('DOMContentLoaded', aggiornaRiepilogo);

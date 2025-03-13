@@ -1,168 +1,167 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slot Machine Sorteggio</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #1a1a1a;
-            font-family: 'Arial', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .slot-machine {
-            display: flex;
-            gap: 20px;
-            padding: 30px;
-            background: #2c2c2c;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        .reel {
-            width: 150px;
-            height: 200px;
-            background: #1a1a1a;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            perspective: 1000px;
-        }
-
-        .reel-inner {
-            position: absolute;
-            width: 100%;
-            transition: transform 4s cubic-bezier(0.1, 0.3, 0.1, 1);
-            transform-style: preserve-3d;
-        }
-
-        .slot-item {
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-            color: white;
-            border-bottom: 2px solid #333;
-            background: linear-gradient(45deg, #2c3e50, #34495e);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .spin-btn {
-            position: absolute;
-            bottom: -80px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 40px;
-            background: #00b894;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .result {
-            position: absolute;
-            top: -80px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #ffd700;
-            font-size: 3em;
-            text-shadow: 0 0 30px #ffd700;
-            opacity: 0;
-            white-space: nowrap;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        @keyframes winner-anim {
-            0% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.2); }
-            100% { transform: translateX(-50%) scale(1); }
-        }
-
-        .winner {
-            animation: winner-anim 1s infinite;
-            opacity: 1 !important;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Machine Sorteggio</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1a1a1a;
+      font-family: 'Arial', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .slot-machine {
+      display: flex;
+      gap: 20px;
+      padding: 30px;
+      background: #2c2c2c;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .reel {
+      width: 150px;
+      height: 200px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      perspective: 1000px;
+    }
+    .reel-inner {
+      position: absolute;
+      width: 100%;
+      transition: transform 4s cubic-bezier(0.1, 0.3, 0.1, 1);
+      transform-style: preserve-3d;
+    }
+    .slot-item {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      color: white;
+      border-bottom: 2px solid #333;
+      background: linear-gradient(45deg, #2c3e50, #34495e);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .spin-btn {
+      position: absolute;
+      bottom: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 40px;
+      background: #00b894;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .result {
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ffd700;
+      font-size: 3em;
+      text-shadow: 0 0 30px #ffd700;
+      opacity: 0;
+      white-space: nowrap;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    @keyframes winner-anim {
+      0% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.2); }
+      100% { transform: translateX(-50%) scale(1); }
+    }
+    .winner {
+      animation: winner-anim 1s infinite;
+      opacity: 1 !important;
+    }
+  </style>
 </head>
 <body>
-    <div class="slot-machine" id="slotMachine">
-        <div class="result" id="result"></div>
-        <!-- I reel vengono aggiunti dinamicamente -->
-        <button class="spin-btn" id="spinBtn">🎰 SPIN</button>
-    </div>
-    <button class="spin-btn" onclick="window.location.href='index.html'" style="background: #0984e3; margin-top: 50px;">↩ Torna indietro</button>
+  <div class="slot-machine" id="slotMachine">
+    <div class="result" id="result"></div>
+    <!-- I reel vengono aggiunti dinamicamente -->
+    <button class="spin-btn" id="spinBtn">🎰 SPIN</button>
+  </div>
+  <button class="spin-btn" onclick="window.location.href='index.html'" style="background: #0984e3; margin-top: 50px;">↩ Torna indietro</button>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const partecipanti = JSON.parse(localStorage.getItem('partecipanti')) || [];
-            const slotMachine = document.getElementById('slotMachine');
-            const spinBtn = document.getElementById('spinBtn');
-            const result = document.getElementById('result');
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const partecipanti = JSON.parse(localStorage.getItem('partecipanti')) || [];
+      const slotMachine = document.getElementById('slotMachine');
+      const spinBtn = document.getElementById('spinBtn');
+      const result = document.getElementById('result');
 
-            const createReel = () => {
-                const reel = document.createElement('div');
-                reel.className = 'reel';
-                const inner = document.createElement('div');
-                inner.className = 'reel-inner';
-                
-                const items = [...partecipanti, ...partecipanti, ...partecipanti];
-                items.forEach(name => {
-                    const div = document.createElement('div');
-                    div.className = 'slot-item';
-                    div.textContent = name;
-                    inner.appendChild(div);
-                });
-                
-                reel.appendChild(inner);
-                return reel;
-            };
-
-            for(let i = 0; i < 3; i++) {
-                slotMachine.insertBefore(createReel(), spinBtn);
-            }
-
-            let isSpinning = false;
-            
-            spinBtn.addEventListener('click', () => {
-                if(isSpinning || partecipanti.length < 2) return;
-                
-                isSpinning = true;
-                result.style.opacity = '0';
-                
-                const reels = document.querySelectorAll('.reel-inner');
-                const winner = partecipanti[Math.floor(Math.random() * partecipanti.length)];
-                
-                reels.forEach((reel) => {
-                    const randomOffset = Math.floor(Math.random() * 200);
-                    const targetPosition = -(reel.children.length * 200 - 600) + randomOffset;
-                    
-                    reel.style.transform = 'translateY(0)';
-                    void reel.offsetHeight;
-                    reel.style.transform = `translateY(${targetPosition}px)`;
-                });
-
-                setTimeout(() => {
-                    isSpinning = false;
-                    result.textContent = `VINCITORE: ${winner}`;
-                    result.style.opacity = '1';
-                    result.classList.add('winner');
-                }, 4000);
-            });
+      const createReel = () => {
+        const reel = document.createElement('div');
+        reel.className = 'reel';
+        const inner = document.createElement('div');
+        inner.className = 'reel-inner';
+        
+        // Per assicurare una transizione fluida, ripetiamo l'elenco dei partecipanti 3 volte.
+        const items = [...partecipanti, ...partecipanti, ...partecipanti];
+        items.forEach(name => {
+          const div = document.createElement('div');
+          div.className = 'slot-item';
+          div.textContent = name;
+          inner.appendChild(div);
         });
-    </script>
+        
+        reel.appendChild(inner);
+        return reel;
+      };
+
+      // Aggiungo 3 rulli alla slot machine
+      for(let i = 0; i < 3; i++) {
+        slotMachine.insertBefore(createReel(), spinBtn);
+      }
+
+      let isSpinning = false;
+      
+      spinBtn.addEventListener('click', () => {
+        if(isSpinning || partecipanti.length < 2) return;
+        
+        isSpinning = true;
+        result.style.opacity = '0';
+        
+        // Scegliamo casualmente l'indice del vincitore
+        const winnerIndex = Math.floor(Math.random() * partecipanti.length);
+        const winner = partecipanti[winnerIndex];
+        
+        // Per ciascun rullo, calcoliamo la posizione target.
+        // Utilizziamo la seconda copia (il blocco centrale) dei partecipanti, così il nome vincente apparirà allineato.
+        const targetIndex = partecipanti.length + winnerIndex;
+        const targetPosition = -(targetIndex * 200); // Ogni elemento ha altezza 200px
+
+        const reels = document.querySelectorAll('.reel-inner');
+        reels.forEach((reel) => {
+          // Reset iniziale per riavviare la transizione
+          reel.style.transform = 'translateY(0)';
+          void reel.offsetHeight; // Trigger reflow
+          reel.style.transform = `translateY(${targetPosition}px)`;
+        });
+
+        setTimeout(() => {
+          isSpinning = false;
+          result.textContent = `VINCITORE: ${winner}`;
+          result.style.opacity = '1';
+          result.classList.add('winner');
+        }, 4000);
+      });
+    });
+  </script>
 </body>
 </html>

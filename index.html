@@ -3,94 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Partecipanti</title>
+    <title>Elenco Partecipanti</title>
     <style>
-        /* Stili esistenti... */
-        
-        .riepilogo-section {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #e8f5e9;
-            border-radius: 8px;
-            display: none; /* Nascondi inizialmente */
+        :root {
+            --primary: #2d3436;
+            --secondary: #0984e3;
+            --accent: #00b894;
+            --background: #f8f9fa;
         }
 
-        .riepilogo-title {
-            color: #2e7d32;
-            margin-bottom: 15px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f1f2f6 0%, #dfe4ea 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        h1:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            margin: 1rem auto 0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+        }
+
+        button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--secondary), #0873c4);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(9, 132, 227, 0.3);
+        }
+
+        .riepilogo-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            min-height: 200px;
         }
 
         #riepilogoNomi {
-            line-height: 1.6;
-            columns: 2;
-            column-gap: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
 
         .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            margin: 3px;
-            background-color: #81c784;
-            border-radius: 15px;
-            font-size: 0.9em;
+            background: var(--accent);
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .badge:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .badge:hover:after {
+            opacity: 1;
+        }
+
+        .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes badge-appear {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Aggiungi Partecipanti</h1>
+        <h1>Registro Partecipanti</h1>
+        
         <div class="input-group">
-            <input type="text" id="nomeInput" placeholder="Inserisci nome...">
+            <input type="text" id="nomeInput" placeholder="Inserisci nome partecipante..." autofocus>
             <button onclick="aggiungiNome()">Aggiungi</button>
         </div>
-        <ul id="listaNomi"></ul>
 
-        <!-- Nuova sezione riepilogo -->
-        <div class="riepilogo-section" id="riepilogo">
-            <h3 class="riepilogo-title">📋 Elenco Completo Partecipanti</h3>
+        <div class="riepilogo-section">
             <div id="riepilogoNomi"></div>
+            <p id="messaggioVuoto" style="text-align: center; color: #666; display: none;">
+                Nessun partecipante aggiunto
+            </p>
         </div>
     </div>
 
     <script>
-        let partecipanti = []; // Array per memorizzare tutti i nomi
+        let partecipanti = [];
 
         function aggiungiNome() {
             const input = document.getElementById('nomeInput');
             const nome = input.value.trim();
             
             if (nome) {
-                // Aggiungi alla lista visiva
-                const lista = document.getElementById('listaNomi');
-                const listItem = document.createElement('li');
-                listItem.textContent = nome;
-                lista.appendChild(listItem);
-
-                // Aggiungi all'array e aggiorna riepilogo
                 partecipanti.push(nome);
                 aggiornaRiepilogo();
-
                 input.value = '';
+                input.focus();
             }
         }
 
         function aggiornaRiepilogo() {
             const riepilogoDiv = document.getElementById('riepilogoNomi');
-            const riepilogoSection = document.getElementById('riepilogo');
-            
-            // Mostra/nascondi la sezione
-            riepilogoSection.style.display = partecipanti.length > 0 ? 'block' : 'none';
+            const messaggioVuoto = document.getElementById('messaggioVuoto');
 
-            // Formatta i nomi con badge
             riepilogoDiv.innerHTML = partecipanti
-                .map(nome => `<span class="badge">${nome}</span>`)
-                .join('');
+                .map(nome => `
+                    <div class="badge" style="animation: badge-appear 0.3s ease">
+                        ${nome}
+                    </div>
+                `).join('');
+
+            messaggioVuoto.style.display = partecipanti.length > 0 ? 'none' : 'block';
         }
 
-        // Supporto per tasto Invio
+        // Aggiungi con Invio
         document.getElementById('nomeInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') aggiungiNome();
         });
+
+        // Mostra/nascondi messaggio all'avvio
+        aggiornaRiepilogo();
     </script>
 </body>
 </html>

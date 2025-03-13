@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Slot Machine Sorteggio</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       background: #1a1a1a;
       font-family: 'Arial', sans-serif;
       min-height: 100vh;
@@ -38,12 +37,12 @@
     .reel-inner {
       position: absolute;
       width: 100%;
-      /* Durata della transizione impostata a 8 secondi */
+      /* Manteniamo la durata a 8 secondi */
       transition: transform 8s cubic-bezier(0.1, 0.3, 0.1, 1);
       transform-style: preserve-3d;
     }
     .slot-item {
-      height: 200px;
+      height: 200px; /* Deve corrispondere al calcolo finale */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -81,8 +80,8 @@
       letter-spacing: 2px;
     }
     @keyframes winner-anim {
-      0% { transform: translateX(-50%) scale(1); }
-      50% { transform: translateX(-50%) scale(1.2); }
+      0%   { transform: translateX(-50%) scale(1); }
+      50%  { transform: translateX(-50%) scale(1.2); }
       100% { transform: translateX(-50%) scale(1); }
     }
     .winner {
@@ -96,7 +95,8 @@
     <div class="result" id="result"></div>
     <button class="spin-btn" id="spinBtn">🎰 SPIN</button>
   </div>
-  <button class="spin-btn" onclick="window.location.href='index.html'" style="background: #0984e3; margin-top: 50px;">↩ Torna indietro</button>
+  <button class="spin-btn" onclick="window.location.href='index.html'" 
+          style="background: #0984e3; margin-top: 50px;">↩ Torna indietro</button>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -111,7 +111,7 @@
         const inner = document.createElement('div');
         inner.className = 'reel-inner';
         
-        // Per una transizione fluida, ripetiamo l'elenco dei partecipanti 3 volte.
+        // Ripetiamo l'elenco dei partecipanti 3 volte
         const items = [...partecipanti, ...partecipanti, ...partecipanti];
         items.forEach(name => {
           const div = document.createElement('div');
@@ -132,7 +132,7 @@
       let isSpinning = false;
       
       spinBtn.addEventListener('click', () => {
-        if(isSpinning || partecipanti.length < 2) return;
+        if (isSpinning || partecipanti.length < 2) return;
         
         isSpinning = true;
         result.style.opacity = '0';
@@ -141,20 +141,26 @@
         const winnerIndex = Math.floor(Math.random() * partecipanti.length);
         const winner = partecipanti[winnerIndex];
         
-        // Aggiungiamo cicli extra per aumentare la velocità visiva dello spin
-        const extraCycles = 5; // numero di cicli extra
-        const targetIndex = partecipanti.length * extraCycles + winnerIndex;
-        const targetPosition = -(targetIndex * 90); // Ogni elemento ha altezza 200px
+        // Cicli extra moderati (2) per non far "saltare" troppo i nomi
+        const extraCycles = 2;
+        
+        // Calcolo della posizione finale
+        // 1) Partecipanti * extraCycles -> numero di elementi totali che scorrono prima di fermarsi
+        // 2) + winnerIndex -> l'elemento finale è proprio quello vincente
+        const targetIndex = (partecipanti.length * extraCycles) + winnerIndex;
+        
+        // Ogni slot ha altezza 200px
+        const targetPosition = -(targetIndex * 200);
 
         const reels = document.querySelectorAll('.reel-inner');
         reels.forEach((reel) => {
           // Reset per riavviare la transizione
           reel.style.transform = 'translateY(0)';
-          void reel.offsetHeight; // Trigger reflow
+          void reel.offsetHeight; // forziamo il reflow
           reel.style.transform = `translateY(${targetPosition}px)`;
         });
 
-        // Delay impostato a 8000ms per sincronizzarsi con la durata di 8 secondi
+        // Durata 8 secondi, come la transition
         setTimeout(() => {
           isSpinning = false;
           result.textContent = `VINCITORE: ${winner}`;

@@ -5,16 +5,21 @@ function aggiungiNome() {
     const nome = input.value.trim();
     
     if (nome) {
+        const nomeLower = nome.toLowerCase();
+        const duplicato = partecipanti.some(p => p.toLowerCase() === nomeLower);
+        
+        if (duplicato) {
+            alert('Il guidatore esiste già!');
+            input.value = '';
+            input.focus();
+            return;
+        }
+        
         partecipanti.push(nome);
         aggiornaRiepilogo();
         input.value = '';
         input.focus();
     }
-}
-
-function rimuoviPartecipante(index) {
-    partecipanti.splice(index, 1);
-    aggiornaRiepilogo();
 }
 
 function rimuoviPartecipante(index) {
@@ -35,8 +40,8 @@ document.getElementById('nomeInput').addEventListener('keypress', function(e) {
 document.addEventListener('DOMContentLoaded', aggiornaRiepilogo);
 
 function redirectToSorteggio() {
-    if(partecipanti.length === 0) {
-        alert('Aggiungi almeno un guidatore prima di sorteggiare!');
+    if (partecipanti.length < 2) {
+        alert('Aggiungi almeno 2 guidatori prima di sorteggiare!');
         return;
     }
     
@@ -45,7 +50,6 @@ function redirectToSorteggio() {
 }
 
 function aggiornaRiepilogo() {
-    // ... codice esistente ...
     const riepilogoDiv = document.getElementById('riepilogoNomi');
     const messaggioVuoto = document.getElementById('messaggioVuoto');
 
@@ -71,7 +75,6 @@ function aggiornaRiepilogo() {
     sorteggiaBtn.disabled = partecipanti.length === 0;
 }
 
-// Inizializza il pulsante all'avvio
 document.addEventListener('DOMContentLoaded', () => {
     aggiornaRiepilogo();
 });

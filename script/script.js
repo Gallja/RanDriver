@@ -40,8 +40,8 @@ document.getElementById('nomeInput').addEventListener('keypress', function(e) {
 document.addEventListener('DOMContentLoaded', aggiornaRiepilogo);
 
 function redirectToSorteggio() {
-    if (partecipanti.length === 0) {
-        alert('Aggiungi almeno un guidatore prima di sorteggiare!');
+    if (partecipanti.length < 2) {
+        alert('Aggiungi almeno 2 guidatori prima di sorteggiare!');
         return;
     }
     

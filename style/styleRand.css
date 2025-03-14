@@ -86,3 +86,71 @@ body {
     animation: winner-anim 1s infinite;
     opacity: 1 !important;
   }
+
+@media (max-width: 768px) {
+  .slot-machine {
+    gap: 15px;
+    padding: 20px;
+  }
+  
+  .reel {
+    width: 120px;
+    height: 160px;
+  }
+  
+  .slot-item {
+    height: 160px;
+    font-size: 1.5em;
+  }
+  
+  .spin-btn {
+    padding: 12px 30px;
+    font-size: 1em;
+    bottom: -70px;
+  }
+  
+  .spin-btn.small-btn {
+    padding: 8px 25px;
+    font-size: 0.8em;
+    bottom: -120px;
+  }
+  
+  .result {
+    top: -70px;
+    font-size: 2.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  .slot-machine {
+    align-items: center;
+    padding: 15px;
+  }
+  
+  .reel {
+    width: 100px;
+    height: 130px;
+  }
+  
+  .slot-item {
+    height: 130px;
+    font-size: 1.2em;
+  }
+  
+  .spin-btn {
+    padding: 10px 20px;
+    font-size: 0.9em;
+    bottom: -60px;
+  }
+  
+  .spin-btn.small-btn {
+    padding: 6px 18px;
+    font-size: 0.7em;
+    bottom: -100px;
+  }
+  
+  .result {
+    top: -60px;
+    font-size: 2em;
+  }
+}
